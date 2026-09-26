@@ -11,7 +11,9 @@
     "preview": "astro preview",
     "astro": "astro",
     "test": "vitest run",
-    "check": "astro check"
+    "check": "astro check",
+    "predev": "node scripts/copy-pdfjs-assets.mjs",
+    "prebuild": "node scripts/copy-pdfjs-assets.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^7.0.0",
