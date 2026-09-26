@@ -1,4 +1,4 @@
-# Quiet PDF
+# InhousePDF
 
 Private PDF tools that run entirely in the browser: merge, split, organize, and compress.
 Files never leave the device. A Quiet Labs project.

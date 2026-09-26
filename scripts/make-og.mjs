@@ -17,7 +17,7 @@ const svg = `
     <path d="M80 0c16 0 24 8 24 24v22c0 12 6 20 16 20-10 0-16 8-16 20v22c0 16-8 24-24 24"/>
   </g>
   <circle cx="600" cy="186" r="14" fill="#b9c2ff"/>
-  <text x="600" y="380" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="84" font-weight="700" fill="#ffffff">Quiet PDF</text>
+  <text x="600" y="380" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="84" font-weight="700" fill="#ffffff">InhousePDF</text>
   <text x="600" y="450" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="38" fill="#c9cde0">PDF tools that never upload your files</text>
   <text x="600" y="540" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="28" fill="#8c93b3">Merge · Split · Organize · Compress</text>
 </svg>`;

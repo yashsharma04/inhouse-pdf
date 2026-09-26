@@ -43,7 +43,7 @@ FAQ (static HTML + FAQPage JSON-LD) → links to other tools.
 
 Shared layout: header (logo, tool links), footer (privacy line, source link, "by Quiet Labs", tip link).
 
-Product name and domain live in one config file (`src/site.ts`). Working name: "Quiet PDF".
+Product name and domain live in one config file (`src/site.ts`). Working name was "Quiet PDF"; renamed to "InhousePDF" (inhousepdf.com) because several live "QuietPDF" products already offer the same pitch.
 
 ## Tool UX
 
