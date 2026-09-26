@@ -9,20 +9,20 @@ let stderr = '';
 let ghostscript: Promise<Ghostscript> | undefined;
 
 function getGhostscript(): Promise<Ghostscript> {
-  if (!ghostscript) {
-    ghostscript = loadGhostscript({
-      locateFile: (path: string) => (path.endsWith('.wasm') ? wasmUrl : path),
-      print: () => {},
-      printErr: (text: string) => {
-        stderr += `${text}\n`;
-      },
-    });
-    // A failed download (e.g. offline) must not be cached, so the next job retries.
-    ghostscript.catch(() => {
-      ghostscript = undefined;
-    });
-  }
-  return ghostscript;
+  if (ghostscript) return ghostscript;
+  const loading: Promise<Ghostscript> = loadGhostscript({
+    locateFile: (path: string) => (path.endsWith('.wasm') ? wasmUrl : path),
+    print: () => {},
+    printErr: (text: string) => {
+      stderr += `${text}\n`;
+    },
+  });
+  ghostscript = loading;
+  // A failed download (e.g. offline) must not be cached, so the next job retries.
+  loading.catch(() => {
+    ghostscript = undefined;
+  });
+  return loading;
 }
 
 function readStderr(): string {
