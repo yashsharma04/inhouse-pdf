@@ -37,10 +37,11 @@ export function CompressTool() {
 
   if (compress.state.status === 'done') {
     const { bytes, originalSize, compressedSize } = compress.state.result;
-    const saved = Math.round((1 - compressedSize / originalSize) * 100);
+    // Rounded down so a 99.6% saving never reads as "100% smaller".
+    const saved = Math.floor((1 - compressedSize / originalSize) * 100);
     return (
       <ResultPanel
-        title={`${saved}% smaller`}
+        title={saved < 1 ? 'Less than 1% smaller' : `${saved}% smaller`}
         detail={`${formatBytes(originalSize)} → ${formatBytes(compressedSize)}`}
         bytes={bytes}
         fileName={`${baseName(pdf!.file.name)}-compressed.pdf`}

@@ -70,6 +70,16 @@ describe('CompressTool', () => {
     expect(downloadBytes).toHaveBeenCalledWith(expect.any(Uint8Array), 'scan-compressed.pdf', 'application/pdf');
   });
 
+  it.each([
+    [4000, '99% smaller'],
+    [995_000, 'Less than 1% smaller'],
+  ])('never overstates the saving (compressed to %i bytes)', async (compressedSize, title) => {
+    onCompress(async () => ({ bytes: new Uint8Array(10), originalSize: 1_000_000, compressedSize }));
+    const user = await renderWithFile();
+    await user.click(button('Compress PDF'));
+    expect(await screen.findByText(title)).toBeInTheDocument();
+  });
+
   it('explains the wait while compressing', async () => {
     onCompress(() => new Promise(() => {}));
     const user = await renderWithFile();
