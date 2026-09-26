@@ -1,0 +1,9 @@
+---
+import { CompressTool } from '../components/tools/CompressTool';
+import ToolPage from '../layouts/ToolPage.astro';
+import { tools } from '../tools';
+---
+
+<ToolPage tool={tools.compress}>
+  <CompressTool client:load />
+</ToolPage>

@@ -45,6 +45,15 @@ describe('job client and host', () => {
     expect(createEndpoint).toHaveBeenCalledTimes(1);
   });
 
+  it('creates the worker once when warmed, and reuses it for jobs', async () => {
+    const { client, createEndpoint } = connectedClient();
+    client.warm();
+    client.warm();
+    expect(createEndpoint).toHaveBeenCalledTimes(1);
+    await client.run('double', { value: 1 });
+    expect(createEndpoint).toHaveBeenCalledTimes(1);
+  });
+
   it('resolves concurrent jobs with their own results', async () => {
     const { client } = connectedClient();
     const results = await Promise.all([1, 2, 3].map((value) => client.run('double', { value })));

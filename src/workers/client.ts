@@ -2,6 +2,8 @@ import { PdfToolError } from '../lib/pdf/errors';
 import type { JobMap, JobRequest, JobResponse, MessageEndpoint } from './protocol';
 
 export interface JobClient<Jobs extends JobMap> {
+  /** Starts the worker now, so its script is fetched while the page is still online. */
+  warm(): void;
   run<K extends keyof Jobs & string>(
     kind: K,
     input: Jobs[K]['input'],
@@ -41,6 +43,9 @@ export function createJobClient<Jobs extends JobMap>(
   }
 
   return {
+    warm() {
+      connect();
+    },
     run(kind, input, transfer = []) {
       const target = connect();
       const id = nextId++;

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { readPdfFile } from '../../lib/files';
-import { baseName, type PageEdit, type Rotation } from '../../lib/pdf/operations';
-import { renderThumbnails } from '../../lib/thumbnails';
+import { baseName } from '../../lib/pdf/names';
+import type { PageEdit, Rotation } from '../../lib/pdf/operations';
 import { pdfJobs } from '../../workers';
 import { DropZone } from '../DropZone';
 import { ErrorMessage } from '../ErrorMessage';
@@ -10,6 +10,7 @@ import { ResultPanel } from '../ResultPanel';
 import { SortableList } from '../SortableList';
 import { useAction } from '../useAction';
 import { useInspectedPdf, type InspectedPdf } from '../useInspectedPdf';
+import { useWarmWorkers } from '../useWarmWorkers';
 
 interface PageItem extends PageEdit {
   id: string;
@@ -26,7 +27,11 @@ function useThumbnails(file: File): Record<number, string> {
     const controller = new AbortController();
     const urls: string[] = [];
     void (async () => {
-      const { bytes } = await readPdfFile(file);
+      // pdf.js is large and browser-only, so it is loaded when thumbnails are first needed.
+      const [{ renderThumbnails }, { bytes }] = await Promise.all([
+        import('../../lib/thumbnails'),
+        readPdfFile(file),
+      ]);
       await renderThumbnails(
         bytes,
         (pageIndex, url) => {
@@ -49,6 +54,7 @@ function useThumbnails(file: File): Record<number, string> {
 }
 
 export function OrganizeTool() {
+  useWarmWorkers();
   const source = useInspectedPdf();
 
   if (!source.pdf) {

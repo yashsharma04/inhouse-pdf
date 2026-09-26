@@ -1,0 +1,11 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../site';
+---
+
+<Base title={`Page not found | ${site.name}`} description="This page doesn't exist." noindex>
+  <section class="container home-hero">
+    <h1>Page not found</h1>
+    <p class="lead">This page doesn't exist. <a href="/">Go to all PDF tools</a>.</p>
+  </section>
+</Base>

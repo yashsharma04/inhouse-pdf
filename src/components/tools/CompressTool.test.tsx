@@ -2,7 +2,10 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('../../workers', () => ({ pdfJobs: { run: vi.fn() }, compressJobs: { run: vi.fn() } }));
+vi.mock('../../workers', () => ({
+  pdfJobs: { run: vi.fn(), warm: vi.fn() },
+  compressJobs: { run: vi.fn(), warm: vi.fn() },
+}));
 vi.mock('../../lib/files', async (importOriginal) => ({
   ...(await importOriginal<typeof import('../../lib/files')>()),
   downloadBytes: vi.fn(),
@@ -14,16 +17,20 @@ import { button, fileInput, pdfFile, setupUser } from '../../test/tools';
 import { compressJobs, pdfJobs } from '../../workers';
 import { CompressTool } from './CompressTool';
 
-const compress = vi.mocked(compressJobs.run);
+const run = vi.mocked(compressJobs.run);
+const RESULT = { bytes: new Uint8Array(10), originalSize: 4 * 1024 * 1024, compressedSize: 1024 * 1024 };
+
+/** Sets what the compress job does; the warm-up job always succeeds. */
+function onCompress(behavior: () => Promise<unknown>) {
+  run.mockImplementation(async (kind) => (kind === 'warmUp' ? null : behavior()) as never);
+}
 
 beforeEach(() => {
   vi.mocked(pdfJobs.run).mockReset().mockResolvedValue({ pageCount: 4 });
+  vi.mocked(pdfJobs.warm).mockReset();
   vi.mocked(downloadBytes).mockReset();
-  compress.mockReset().mockResolvedValue({
-    bytes: new Uint8Array(10),
-    originalSize: 4 * 1024 * 1024,
-    compressedSize: 1024 * 1024,
-  });
+  run.mockReset();
+  onCompress(async () => RESULT);
 });
 
 async function renderWithFile() {
@@ -35,6 +42,12 @@ async function renderWithFile() {
 }
 
 describe('CompressTool', () => {
+  it('preloads the workers and compression engine on mount', () => {
+    render(<CompressTool />);
+    expect(pdfJobs.warm).toHaveBeenCalled();
+    expect(run).toHaveBeenCalledWith('warmUp', {});
+  });
+
   it('defaults to the recommended level', async () => {
     await renderWithFile();
     expect(screen.getByRole('radio', { name: /Recommended/ })).toBeChecked();
@@ -46,7 +59,7 @@ describe('CompressTool', () => {
     await user.click(screen.getByRole('radio', { name: /Strong/ }));
     await user.click(button('Compress PDF'));
 
-    expect(compress).toHaveBeenCalledWith(
+    expect(run).toHaveBeenCalledWith(
       'compress',
       { file: expect.objectContaining({ name: 'scan.pdf' }), level: 'strong' },
       expect.any(Array),
@@ -58,7 +71,7 @@ describe('CompressTool', () => {
   });
 
   it('explains the wait while compressing', async () => {
-    compress.mockReturnValue(new Promise(() => {}));
+    onCompress(() => new Promise(() => {}));
     const user = await renderWithFile();
     await user.click(button('Compress PDF'));
     expect(button('Compressing…')).toBeDisabled();
@@ -67,16 +80,18 @@ describe('CompressTool', () => {
   });
 
   it('tells the user when the file is already optimized', async () => {
-    compress.mockRejectedValue(
-      new PdfToolError('already-optimized', '"scan.pdf" is already well optimized. Compressing it wouldn\'t make it smaller.'),
-    );
+    onCompress(async () => {
+      throw new PdfToolError('already-optimized', '"scan.pdf" is already well optimized. Compressing it wouldn\'t make it smaller.');
+    });
     const user = await renderWithFile();
     await user.click(button('Compress PDF'));
     expect(await screen.findByRole('alert')).toHaveTextContent('"scan.pdf" is already well optimized.');
   });
 
   it('clears a previous error when another level is picked', async () => {
-    compress.mockRejectedValueOnce(new PdfToolError('already-optimized', 'already optimized'));
+    onCompress(async () => {
+      throw new PdfToolError('already-optimized', 'already optimized');
+    });
     const user = await renderWithFile();
     await user.click(button('Compress PDF'));
     await screen.findByRole('alert');

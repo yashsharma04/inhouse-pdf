@@ -5,5 +5,6 @@ export const site = {
   studio: 'Quiet Labs',
   studioUrl: 'https://x.com/quietlabs_devv',
   sourceUrl: 'https://github.com/yashsharma04/quiet-pdf',
-  tipUrl: 'https://buymeacoffee.com/',
-} as const;
+  /** Tip link shown in the footer; hidden while null. */
+  tipUrl: null as string | null,
+};

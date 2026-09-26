@@ -9,7 +9,12 @@ import { site } from './src/site.ts';
 // https://astro.build/config
 export default defineConfig({
   site: site.url,
+  // /merge-pdf.html is served by Cloudflare Pages at /merge-pdf, matching links and canonical URLs.
+  trailingSlash: 'never',
+  build: { format: 'file' },
   integrations: [react(), sitemap()],
+  // No code blocks on the site; Shiki's inline styles would conflict with the CSP.
+  markdown: { syntaxHighlight: false },
   security: {
     csp: {
       directives: [

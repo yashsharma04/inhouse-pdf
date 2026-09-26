@@ -1,0 +1,9 @@
+---
+import { MergeTool } from '../components/tools/MergeTool';
+import ToolPage from '../layouts/ToolPage.astro';
+import { tools } from '../tools';
+---
+
+<ToolPage tool={tools.merge}>
+  <MergeTool client:load />
+</ToolPage>

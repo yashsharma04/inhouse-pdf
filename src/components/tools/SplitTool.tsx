@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { readPdfFile } from '../../lib/files';
 import { PdfToolError } from '../../lib/pdf/errors';
-import { baseName } from '../../lib/pdf/operations';
+import { baseName } from '../../lib/pdf/names';
 import { parsePageRanges } from '../../lib/pdf/ranges';
 import { pdfJobs } from '../../workers';
 import { DropZone } from '../DropZone';
@@ -10,6 +10,7 @@ import { PdfSummary, pagesLabel } from '../PdfSummary';
 import { ResultPanel } from '../ResultPanel';
 import { useAction } from '../useAction';
 import { useInspectedPdf } from '../useInspectedPdf';
+import { useWarmWorkers } from '../useWarmWorkers';
 
 type Mode = 'ranges' | 'every';
 
@@ -30,6 +31,7 @@ function validateRanges(input: string, pageCount: number): { indices: number[] }
 }
 
 export function SplitTool() {
+  useWarmWorkers();
   const source = useInspectedPdf();
   const [mode, setMode] = useState<Mode>('ranges');
   const [ranges, setRanges] = useState('');

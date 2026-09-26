@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { CompressionLevel, CompressResult } from '../../lib/compress/ghostscript';
 import { formatBytes, readPdfFile } from '../../lib/files';
-import { baseName } from '../../lib/pdf/operations';
+import { baseName } from '../../lib/pdf/names';
 import { compressJobs } from '../../workers';
 import { DropZone } from '../DropZone';
 import { ErrorMessage } from '../ErrorMessage';
@@ -9,6 +9,7 @@ import { PdfSummary } from '../PdfSummary';
 import { ResultPanel } from '../ResultPanel';
 import { useAction } from '../useAction';
 import { useInspectedPdf } from '../useInspectedPdf';
+import { useWarmWorkers } from '../useWarmWorkers';
 
 const LEVELS: { value: CompressionLevel; title: string; hint: string }[] = [
   { value: 'light', title: 'Light', hint: 'High quality, good for printing. Smallest size savings.' },
@@ -17,6 +18,7 @@ const LEVELS: { value: CompressionLevel; title: string; hint: string }[] = [
 ];
 
 export function CompressTool() {
+  useWarmWorkers({ compress: true });
   const source = useInspectedPdf();
   const [level, setLevel] = useState<CompressionLevel>('recommended');
   const compress = useAction<CompressResult>();

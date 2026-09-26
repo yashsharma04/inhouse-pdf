@@ -9,13 +9,20 @@ let stderr = '';
 let ghostscript: Promise<Ghostscript> | undefined;
 
 function getGhostscript(): Promise<Ghostscript> {
-  return (ghostscript ??= loadGhostscript({
-    locateFile: (path: string) => (path.endsWith('.wasm') ? wasmUrl : path),
-    print: () => {},
-    printErr: (text: string) => {
-      stderr += `${text}\n`;
-    },
-  }));
+  if (!ghostscript) {
+    ghostscript = loadGhostscript({
+      locateFile: (path: string) => (path.endsWith('.wasm') ? wasmUrl : path),
+      print: () => {},
+      printErr: (text: string) => {
+        stderr += `${text}\n`;
+      },
+    });
+    // A failed download (e.g. offline) must not be cached, so the next job retries.
+    ghostscript.catch(() => {
+      ghostscript = undefined;
+    });
+  }
+  return ghostscript;
 }
 
 function readStderr(): string {
@@ -25,5 +32,9 @@ function readStderr(): string {
 }
 
 serveJobs<CompressJobs>(self, {
+  warmUp: async () => {
+    await getGhostscript();
+    return null;
+  },
   compress: async ({ file, level }) => compressPdf(await getGhostscript(), file, level, readStderr),
 });

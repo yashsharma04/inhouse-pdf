@@ -1,6 +1,7 @@
 import { PDFDocument, degrees } from 'pdf-lib';
 import { PdfToolError } from './errors';
 import { loadPdf } from './load';
+import { baseName } from './names';
 
 export interface PdfFile {
   name: string;
@@ -14,10 +15,6 @@ export interface PageEdit {
   index: number;
   /** Rotation to add on top of the page's existing rotation. */
   rotation: Rotation;
-}
-
-export function baseName(fileName: string): string {
-  return fileName.replace(/\.pdf$/i, '');
 }
 
 async function copyInto(target: PDFDocument, source: PDFDocument, indices: number[]) {

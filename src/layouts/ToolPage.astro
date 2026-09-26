@@ -1,0 +1,83 @@
+---
+import { site } from '../site';
+import { toolList, type Tool } from '../tools';
+import Base from './Base.astro';
+
+interface Props {
+  tool: Tool;
+}
+
+const { tool } = Astro.props;
+const otherTools = toolList.filter((other) => other.slug !== tool.slug);
+
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: `${tool.name} — ${site.name}`,
+    url: new URL(`/${tool.slug}`, site.url).href,
+    applicationCategory: 'UtilitiesApplication',
+    operatingSystem: 'Any',
+    browserRequirements: 'Requires JavaScript',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    description: tool.description,
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: tool.faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+    })),
+  },
+];
+---
+
+<Base title={`${tool.title} | ${site.name}`} description={tool.description} structuredData={structuredData}>
+  <section class="container tool-hero">
+    <h1>{tool.heading}</h1>
+    <p class="lead">{tool.promise}</p>
+  </section>
+
+  <section class="container tool-panel">
+    <slot />
+  </section>
+
+  <section class="container prose-section">
+    <h2>How it works</h2>
+    <ol class="steps">
+      {tool.steps.map((step) => <li>{step}</li>)}
+    </ol>
+  </section>
+
+  <section class="container prose-section">
+    <h2>Questions</h2>
+    <div class="faqs">
+      {
+        tool.faqs.map((faq) => (
+          <details class="faq">
+            <summary>{faq.question}</summary>
+            <p>{faq.answer}</p>
+          </details>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="container prose-section">
+    <h2>More private PDF tools</h2>
+    <ul class="tool-grid tool-grid--compact">
+      {
+        otherTools.map((other) => (
+          <li>
+            <a class="tool-card" href={`/${other.slug}`}>
+              <span class="tool-card__name">{other.name}</span>
+              <span class="tool-card__summary">{other.summary}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</Base>

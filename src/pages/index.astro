@@ -1,17 +1,56 @@
 ---
+import Base from '../layouts/Base.astro';
+import { site } from '../site';
+import { toolList } from '../tools';
 
+const description =
+  'Merge, split, organize, and compress PDFs in your browser. Free, no sign-up, and your files never leave your device.';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Base title={`${site.name} — ${site.tagline}`} description={description}>
+  <section class="container home-hero">
+    <p class="eyebrow">Free · No sign-up · Nothing uploaded</p>
+    <h1>PDF tools that never upload your files</h1>
+    <p class="lead">
+      Everything runs inside your browser. Your contracts, statements, and scans stay on your device, where they
+      belong.
+    </p>
+  </section>
+
+  <section class="container" aria-label="Tools">
+    <ul class="tool-grid">
+      {
+        toolList.map((tool) => (
+          <li>
+            <a class="tool-card" href={`/${tool.slug}`}>
+              <span class="tool-card__name">{tool.name}</span>
+              <span class="tool-card__summary">{tool.summary}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="container prose-section">
+    <h2>Private by design, not by promise</h2>
+    <ul class="pillars">
+      <li>
+        <h3>Runs on your device</h3>
+        <p>Your PDFs are opened and processed by your own browser. There is no server that receives them.</p>
+      </li>
+      <li>
+        <h3>Uploads are blocked</h3>
+        <p>
+          The site's security policy tells your browser to refuse sending data anywhere. Turn off your wifi and the
+          tools still work.
+        </p>
+      </li>
+      <li>
+        <h3>Open source</h3>
+        <p>Every line of code is public, so anyone can check exactly what happens to your files.</p>
+      </li>
+    </ul>
+    <p><a href="/about">How it works and how to verify it →</a></p>
+  </section>
+</Base>

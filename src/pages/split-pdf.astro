@@ -1,0 +1,9 @@
+---
+import { SplitTool } from '../components/tools/SplitTool';
+import ToolPage from '../layouts/ToolPage.astro';
+import { tools } from '../tools';
+---
+
+<ToolPage tool={tools.split}>
+  <SplitTool client:load />
+</ToolPage>

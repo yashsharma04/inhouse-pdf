@@ -1,0 +1,9 @@
+---
+import { OrganizeTool } from '../components/tools/OrganizeTool';
+import ToolPage from '../layouts/ToolPage.astro';
+import { tools } from '../tools';
+---
+
+<ToolPage tool={tools.organize}>
+  <OrganizeTool client:load />
+</ToolPage>

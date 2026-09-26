@@ -9,6 +9,7 @@ import { SortableList } from '../SortableList';
 import { toUserMessage } from '../errors';
 import { useAction } from '../useAction';
 import { inspectPdf, type InspectedPdf } from '../useInspectedPdf';
+import { useWarmWorkers } from '../useWarmWorkers';
 
 interface MergeItem extends InspectedPdf {
   id: string;
@@ -17,6 +18,7 @@ interface MergeItem extends InspectedPdf {
 let nextId = 0;
 
 export function MergeTool() {
+  useWarmWorkers();
   const [items, setItems] = useState<MergeItem[]>([]);
   const [addErrors, setAddErrors] = useState<string[]>([]);
   const [adding, setAdding] = useState(false);

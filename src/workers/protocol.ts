@@ -19,6 +19,8 @@ export type PdfJobs = {
 };
 
 export type CompressJobs = {
+  /** Downloads and initializes Ghostscript ahead of the first compression. */
+  warmUp: { input: Record<string, never>; output: null };
   compress: { input: { file: PdfFile; level: CompressionLevel }; output: CompressResult };
 };
 

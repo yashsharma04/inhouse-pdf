@@ -2,7 +2,10 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('../../workers', () => ({ pdfJobs: { run: vi.fn() }, compressJobs: { run: vi.fn() } }));
+vi.mock('../../workers', () => ({
+  pdfJobs: { run: vi.fn(), warm: vi.fn() },
+  compressJobs: { run: vi.fn(), warm: vi.fn() },
+}));
 vi.mock('../../lib/thumbnails', () => ({ renderThumbnails: vi.fn() }));
 vi.mock('../../lib/files', async (importOriginal) => ({
   ...(await importOriginal<typeof import('../../lib/files')>()),
