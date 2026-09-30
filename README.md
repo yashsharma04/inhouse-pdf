@@ -33,7 +33,8 @@ npm run preview    # serve dist/ (needed to test the CSP, which is not applied i
 ## Deploying (Cloudflare Pages)
 
 - Build command `npm run build`, output directory `dist`, Node 22.12+.
-- Enable Web Analytics in the Pages project settings (it injects the cookieless beacon the CSP allows).
+- `wrangler.jsonc` tells Cloudflare Workers to serve `404.html` for unknown URLs (`not_found_handling: 404-page`). Without this, missing routes return an empty 404.
+- Enable Web Analytics in the project settings (it injects the cookieless beacon the CSP allows).
 - Canonical URLs, sitemap, robots.txt, and OG tags come from `src/site.ts`.
   The site currently uses `https://inhouse-pdf.95yashsharma.workers.dev`. Change `site.url` if the host changes.
 
