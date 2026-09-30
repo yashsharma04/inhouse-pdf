@@ -34,7 +34,8 @@ npm run preview    # serve dist/ (needed to test the CSP, which is not applied i
 
 - Build command `npm run build`, output directory `dist`, Node 22.12+.
 - Enable Web Analytics in the Pages project settings (it injects the cookieless beacon the CSP allows).
-- Before launch, set the real domain in `src/site.ts` (used for canonical URLs, sitemap, robots.txt, OG tags).
+- Canonical URLs, sitemap, robots.txt, and OG tags come from `src/site.ts`.
+  The site currently uses the free `inhouse-pdf.pages.dev` host. Change `site.url` if you attach a custom domain later.
 
 ## License
 

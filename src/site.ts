@@ -1,6 +1,6 @@
 export const site = {
   name: 'InhousePDF',
-  url: 'https://inhousepdf.com',
+  url: 'https://inhouse-pdf.pages.dev',
   tagline: 'PDF tools that never upload your files',
   studio: 'Quiet Labs',
   studioUrl: 'https://x.com/quietlabs_devv',
